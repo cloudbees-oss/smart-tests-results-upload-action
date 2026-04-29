@@ -1,0 +1,36 @@
+
+name: 'Smart Test Results Upload'
+description: 'Collect and upload test results'
+author: 'CloudBees'
+
+inputs:
+  files:
+    description: 'Wildcard Patterns for test results'
+    required: false
+    # These are default file types
+    default: |
+      **/*.xml
+      **/*.json
+      **/*.trx
+      **/*.tap
+      **/*.junit
+      **/*.tlog
+      **/test-results/**
+      **/test-reports/**
+      **/reports/*.log
+  days:
+    description: 'Artifact retention in days'
+    required: false
+    default: '21'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Upload Test Artifacts
+      continue-on-error: true
+      uses: actions/upload-artifact@v4
+      with:
+        name: test-artifacts-${{ github.job }}-${{ github.run_id }}-${{ github.run_attempt }}
+        path: ${{ inputs.files }}
+        retention-days: ${{ inputs.days }}
+        if-no-files-found: warn
