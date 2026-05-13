@@ -14,7 +14,7 @@ Add this step at the end of your test job. Always use `if: always()` so results 
 ```yaml
 - name: Store Test Results for Smart Tests
   if: always()
-  uses: launchableinc/smart-tests-results-upload-action@v1
+  uses: cloudbees-oss/smart-tests-results-upload-action@v1
 ````
 
 
@@ -23,7 +23,7 @@ Add this step at the end of your test job. Always use `if: always()` so results 
 ```yaml
 - name: Store Test Results for Smart Tests
   if: always()
-  uses: launchableinc/smart-tests-results-upload-action@v1
+  uses: cloudbees-oss/smart-tests-results-upload-action@v1
   with:
     files: |
       **/*.xml
