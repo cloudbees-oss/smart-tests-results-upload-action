@@ -26,11 +26,29 @@ inputs:
 runs:
   using: 'composite'
   steps:
+    - name: Write Smart Tests metadata
+      continue-on-error: true
+      shell: bash
+      run: |
+        cat <<'EOF' > "${{ runner.temp }}/smart-tests-metadata.json"
+        {
+          "job": "${{ github.job }}",
+          "run_id": "${{ github.run_id }}",
+          "run_attempt": "${{ github.run_attempt }}",
+          "head_sha": "${{ github.sha }}",
+          "head_branch": "${{ github.head_ref || github.ref_name }}",
+          "matrix": ${{ toJson(matrix) }},
+          "job_index": "${{ strategy.job-index }}"
+        }
+        EOF
+
     - name: Upload Test Artifacts
       continue-on-error: true
       uses: actions/upload-artifact@v4
       with:
-        name: test-artifacts-${{ github.job }}-${{ github.run_id }}-${{ github.run_attempt }}
-        path: ${{ inputs.files }}
+        name: test-artifacts-${{ github.job }}-${{ strategy.job-index && format('{0}-', strategy.job-index) }}${{ github.run_id }}-${{ github.run_attempt }}
+        path: |
+          ${{ inputs.files }}
+          ${{ runner.temp }}/smart-tests-metadata.json
         retention-days: ${{ inputs.days }}
         if-no-files-found: warn
