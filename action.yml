@@ -26,11 +26,10 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - name: Write Smart Tests metadata
-      continue-on-error: true
+    - continue-on-error: true
       shell: bash
       run: |
-        cat <<'EOF' > "${{ runner.temp }}/smart-tests-metadata.json"
+        cat <<'EOF' > "${{ runner.temp }}/smart-tests-artifact-metadata.json"
         {
           "job": "${{ github.job }}",
           "run_id": "${{ github.run_id }}",
@@ -49,6 +48,6 @@ runs:
         name: test-artifacts-${{ github.job }}-${{ strategy.job-index && format('{0}-', strategy.job-index) }}${{ github.run_id }}-${{ github.run_attempt }}
         path: |
           ${{ inputs.files }}
-          ${{ runner.temp }}/smart-tests-metadata.json
+          ${{ runner.temp }}/smart-tests-artifact-metadata.json
         retention-days: ${{ inputs.days }}
         if-no-files-found: warn
